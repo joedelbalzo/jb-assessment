@@ -17,6 +17,21 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  api:
+    build:
+      context: ./backend-nestjs
+      dockerfile: Dockerfile
+    container_name: flights_api
+    environment:
+      # Compose WITH DB container
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/flights_db
+      # JWT_SECRET: not-used-in-this-implementation
+      # NODE_ENV: production
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
 
 volumes:
   postgres_data:

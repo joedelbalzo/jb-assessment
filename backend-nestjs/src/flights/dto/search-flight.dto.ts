@@ -3,12 +3,12 @@ import { IsString, IsDateString, Matches, IsOptional } from "class-validator";
 export class SearchFlightsDTO {
   @IsOptional()
   @IsString({ message: 'origin must be a string' })
-  @Matches(/^[A-Z]{2,4}$/, { message: 'origin must be a valid 2-4 lettter IATA/ICAO airport code.' })
+  @Matches(/^[A-Z]{3,4}$/, { message: 'origin must be a valid 3-4 lettter IATA/ICAO airport code.' })
   origin?: string;
 
   @IsOptional()
   @IsString({ message: 'destination must be a string' })
-  @Matches(/^[A-Z]{2,4}$/, { message: 'destination must be a valid 2-4 lettter IATA/ICAO airport code.' })
+  @Matches(/^[A-Z]{3,4}$/, { message: 'destination must be a valid 3-4 lettter IATA/ICAO airport code.' })
   destination?: string;
 
   @IsOptional()

@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
+import { DataSource } from 'typeorm';
 
 describe('Bookings API (e2e)', () => {
   let app: INestApplication;
@@ -28,7 +31,7 @@ describe('Bookings API (e2e)', () => {
     const flightRes = await request(server)
       .post('/api/flights')
       .send({
-        flight_number: 'JB-777',
+        flight_number: 'JB-9003',
         origin: 'JFK',
         destination: 'AUK',
         departure_time: "2025-03-15T10:00:00Z",
@@ -40,8 +43,19 @@ describe('Bookings API (e2e)', () => {
   })
 
   afterAll(async () => {
-    await app.close()
-  })
+    const dataSource = app.get(DataSource);
+    await dataSource.query(`
+    DELETE FROM bookings
+    WHERE flight_id IN (
+      SELECT id FROM flights WHERE flight_number = 'JB-9003'
+    );
+
+    DELETE FROM flights WHERE flight_number = 'JB-9003';
+  `);
+
+    await dataSource.destroy();
+    await app.close();
+  });
 
   it('POST /api/flights/:id/bookings --> should create a booking', async () => {
     const res = await request(server)
@@ -69,7 +83,7 @@ describe('Bookings API (e2e)', () => {
       .send({ passenger_name: 'Joe Del Balzo', seat_class: 'Premium' })
 
     expect(invalidRes.status).toBe(400);
-    expect(invalidRes.body.message[0]).toContain('seat_class must be');
+    expect(invalidRes.body.message[0]).toContain('Seat Class must be');
   });
 
   it('POST /api/flights/:id/bookings/:bookingId --> should cancel booking', async () => {

@@ -1,4 +1,4 @@
-import { IsString, IsInt, IsDateString, Length, Matches, Min, Max } from "class-validator";
+import { IsString, IsInt, IsDateString, Matches, Min, Max } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class CreateFlightDTO {
@@ -7,8 +7,7 @@ export class CreateFlightDTO {
     description: 'Flight Number, as letters JB, hyphen, and three digits'
   })
   @IsString()
-  @Length(3, 7)
-  @Matches(/^[A-Z]{2,4}$/i, { message: 'flight_number must be alphanumeric (e.g. JB-202)' })
+  @Matches(/^[A-Z0-9-]+$/i, { message: 'flight_number must be alphanumeric (e.g. JB-202)' })
   flight_number: string;
 
   @ApiProperty({
@@ -16,8 +15,7 @@ export class CreateFlightDTO {
     description: 'Airport Code'
   })
   @IsString()
-  @Length(2, 4)
-  @Matches(/^[A-Z]{2,4}$/i, { message: 'origin must be 2–4 uppercase letters (IATA/ICAO code)' })
+  @Matches(/^[A-Z]{3,4}$/i, { message: 'origin must be 2–4 uppercase letters (IATA/ICAO code)' })
   origin: string;
 
   @ApiProperty({
@@ -25,8 +23,7 @@ export class CreateFlightDTO {
     description: 'Airport Code'
   })
   @IsString()
-  @Length(2, 4)
-  @Matches(/^[A-Z]{2,4}$/, { message: 'origin must be 2–4 uppercase letters (IATA/ICAO code)' })
+  @Matches(/^[A-Z]{3,4}$/, { message: 'origin must be 2–4 uppercase letters (IATA/ICAO code)' })
   destination: string
 
   @ApiProperty({
