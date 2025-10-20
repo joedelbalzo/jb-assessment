@@ -154,29 +154,7 @@ services:
 
 ---
 
-## Submission
 
-Include the following files and folders:
-
-```
-backend-nestjs/
-docker-compose.yml
-init_db.sql
-README.md
-```
-
-Exclude:
-
-```
-backend-nestjs/node_modules
-backend-nestjs/dist
-```
-
-Submit as either:
-- A public GitHub repository containing this directory  
-- A ZIP archive of the same structure
-
----
 
 ## Author
 
