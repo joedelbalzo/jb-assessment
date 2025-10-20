@@ -1,4 +1,195 @@
-# Flight Management Microservice
+# Flight Management Microservice — NestJS + PostgreSQL
+
+This project implements the Flight Management Microservice described in the assessment brief.  
+It provides a REST API for creating, searching, and managing flights and bookings.
+
+---
+
+## Overview
+
+**Stack**
+- NestJS (TypeScript)
+- PostgreSQL with TypeORM
+- Jest + Supertest for end-to-end testing
+- Docker + Docker Compose for containerization
+- Swagger / OpenAPI documentation at `/api/docs`
+
+The application can run entirely in Docker (API + database) or with the API alone to satisfy the “optional database integration” requirement.
+
+---
+
+## Project Structure
+
+```
+code-assesment-flight-management-api/
+├── backend-nestjs/
+│   ├── src/
+│   ├── test/
+│   ├── Dockerfile
+│   ├── .env.example
+│   └── package.json
+├── init_db.sql
+├── docker-compose.yml
+└── README.md
+```
+
+---
+
+## Run with Database Integration
+
+From the project root:
+
+```powershell
+docker compose up --build
+```
+
+This builds and launches:
+- `flight_db` – PostgreSQL 15 container  
+- `flights_api` – NestJS application  
+
+`init_db.sql` runs automatically to create tables.
+
+Once started:
+- API: http://localhost:3000/api/flights  
+- Swagger: http://localhost:3000/api/docs  
+
+To stop:
+```powershell
+docker compose down
+```
+
+---
+
+## Run without Database Integration
+
+To demonstrate startup without Postgres:
+
+```powershell
+docker compose up --build api
+```
+
+The API container starts normally and logs database-connection errors, confirming it can run without the database service.
+
+---
+
+## Local Development (non-Docker)
+
+```powershell
+cd backend-nestjs
+copy .env.example .env
+npm ci
+npm run start:dev
+```
+
+Requires a local PostgreSQL instance at `localhost:5432`.
+
+---
+
+## Testing
+
+```powershell
+cd backend-nestjs
+npm run test:e2e
+```
+
+Thirteen end-to-end tests validate all routes and behaviors, including:
+- Flight creation and validation
+- Duplicate flight checks
+- Flight search query parameters
+- Booking creation, capacity enforcement, and cancellation
+
+The teardown deletes only test records and never truncates tables.
+
+---
+
+## Validation and Security
+
+- All inputs validated through Nest `ValidationPipe`  
+  (whitelist, forbidNonWhitelisted, and transform enabled)  
+- DTOs enforce patterns for flight numbers, IATA codes, dates, and seat classes  
+- Environment variables loaded from `.env`  
+- No credentials or secrets stored in source  
+- `JWT_SECRET` exists only to mirror the example prompt and is not used  
+
+---
+
+## API Summary
+
+| Method | Route | Description |
+|---------|--------|-------------|
+| GET | `/api/flights` | List or search flights by origin, destination, date, etc. |
+| GET | `/api/flights/:id` | Retrieve a specific flight |
+| POST | `/api/flights` | Create a new flight |
+| GET | `/api/flights/:id/bookings` | List bookings for a flight |
+| POST | `/api/flights/:id/bookings` | Create a booking |
+| DELETE | `/api/flights/:flightId/bookings/:bookingId` | Cancel a booking |
+
+---
+
+## Docker Configuration
+
+The root `docker-compose.yml` defines both services:
+
+```yaml
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: flights_db
+    volumes:
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql:ro
+
+  api:
+    build: ./backend-nestjs
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/flights_db
+    depends_on:
+      db:
+        condition: service_healthy
+```
+
+`backend-nestjs/Dockerfile` is a two-stage build that compiles and runs the Nest app in production mode.
+
+---
+
+## Submission
+
+Include the following files and folders:
+
+```
+backend-nestjs/
+docker-compose.yml
+init_db.sql
+README.md
+```
+
+Exclude:
+
+```
+backend-nestjs/node_modules
+backend-nestjs/dist
+```
+
+Submit as either:
+- A public GitHub repository containing this directory  
+- A ZIP archive of the same structure
+
+---
+
+## Author
+
+Joe Del Balzo  
+Software Engineer  
+Beacon, New York  
+GitHub: https://github.com/joedelbalzo  
+LinkedIn: https://linkedin.com/in/joe-delbalzo
+
+
+
+# Original JB README
+## Flight Management Microservice
 
 ## Overview
 
