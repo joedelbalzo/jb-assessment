@@ -50,8 +50,8 @@ This builds and launches:
 `init_db.sql` runs automatically to create tables.
 
 Once started:
-- API: http://localhost:3000/api/flights  
-- Swagger: http://localhost:3000/api/docs  
+- API: http://localhost:3000/api/flights
+- Swagger Docs: http://localhost:3000/api/docs  
 
 To stop:
 ```powershell
