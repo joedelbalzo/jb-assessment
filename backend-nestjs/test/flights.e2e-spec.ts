@@ -60,8 +60,6 @@ describe('Flights API (e2e)', () => {
     const res = await request(server).post('/api/flights').send(flightData);
 
     expect(res.status).toBe(201);
-
-    expect(res.status).toBe(201);
     expect(res.body).toHaveProperty('id');
     expect(res.body.flight_number).toBe(flightData.flight_number);
     expect(res.body.status).toBe('Scheduled');

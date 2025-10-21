@@ -9,7 +9,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
-    .setTitle('Joe Del Balzo and Jet Blue Flight Management API')
+    .setTitle('Joe Del Balzo Flight Management API')
     .setDescription('API Documentation for managing flights and bookings.')
     .setVersion('1.0')
     .addTag('flights')

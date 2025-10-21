@@ -15,7 +15,7 @@ export class CreateFlightDTO {
     description: 'Airport Code'
   })
   @IsString()
-  @Matches(/^[A-Z]{3,4}$/i, { message: 'origin must be 2–4 uppercase letters (IATA/ICAO code)' })
+  @Matches(/^[A-Z]{3,4}$/i, { message: 'origin must be 3–4 uppercase letters (IATA/ICAO code)' })
   origin: string;
 
   @ApiProperty({
@@ -23,7 +23,7 @@ export class CreateFlightDTO {
     description: 'Airport Code'
   })
   @IsString()
-  @Matches(/^[A-Z]{3,4}$/, { message: 'origin must be 2–4 uppercase letters (IATA/ICAO code)' })
+  @Matches(/^[A-Z]{3,4}$/i, { message: 'destination must be 3–4 uppercase letters (IATA/ICAO code)' })
   destination: string
 
   @ApiProperty({

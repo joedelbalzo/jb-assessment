@@ -23,7 +23,7 @@ import { BookingsModule } from './bookings/bookings.module';
         type: 'postgres',
         url: process.env.DATABASE_URL,
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: process.env.NODE_ENV !== 'production', //this is just my lightweight fail-safe.
       }),
     }),
     FlightsModule,
