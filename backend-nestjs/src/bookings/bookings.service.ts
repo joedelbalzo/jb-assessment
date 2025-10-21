@@ -36,7 +36,8 @@ export class BookingsService {
       throw new NotFoundException(`Flight ID ${flightId} not found`)
     }
 
-    //not in spec, and this is very raw for the sake of simple math as opposed to airlines' algorithm IP.
+    // Basic capacity check: count confirmed bookings against flight capacity
+    // Note: This simplified approach does not use pessimistic locking or seat class allocation
     const confirmed = await this.bookingRepo.count({
       where: { flightId: flightId, status: 'Confirmed' },
     })

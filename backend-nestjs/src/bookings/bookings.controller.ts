@@ -37,7 +37,7 @@ export class BookingsController {
 
   @Delete(':bookingId')
   @HttpCode(200)
-  async cancelBookings(
+  async cancelBooking(
     @Param('flightId', ParseIntPipe) flightId: number,
     @Param('bookingId', ParseIntPipe) bookingId: number
   ): Promise<{ message: string }> {

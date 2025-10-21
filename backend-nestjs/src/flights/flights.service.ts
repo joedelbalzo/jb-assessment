@@ -21,7 +21,8 @@ export class FlightsService {
 
   async create(dto: CreateFlightDTO): Promise<Flight> {
 
-    //very basic service validation -- does it depart before it arrives? does the flight number already exist today?
+    // Validate departure/arrival times and check for duplicate flight numbers on the same day
+    // Note: This simplified approach does not take into consideration flight times. 
     const departure = new Date(dto.departureTime);
     const arrival = new Date(dto.arrivalTime);
     if (arrival <= departure) {
@@ -48,7 +49,6 @@ export class FlightsService {
         `Flight number ${dto.flightNumber} already exists on ${departure.toISOString().split('T')[0]}.`,
       );
     }
-    //end of very basic service validation
 
 
     const flight = this.flightRepo.create({

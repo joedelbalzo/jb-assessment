@@ -229,7 +229,7 @@ describe('FlightsService', () => {
     it('should filter by date', async () => {
       const mockFlights = [
         { id: 1, flightNumber: 'JB-101', departureTime: '2025-03-15T10:00:00Z' },
-      ] as Flight[];
+      ] as unknown as Flight[];
 
       mockRepository.find.mockResolvedValue(mockFlights);
 
