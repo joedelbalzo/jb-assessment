@@ -6,14 +6,14 @@ export class Booking {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'integer', nullable: false })
-  flight_id: number;
+  @Column({ name: 'flight_id', type: 'integer', nullable: false })
+  flightId: number;
 
-  @Column({ type: 'varchar', length: 100, nullable: false })
-  passenger_name: string;
+  @Column({ name: 'passenger_name', type: 'varchar', length: 100, nullable: false })
+  passengerName: string;
 
-  @Column({ type: 'varchar', length: 20, nullable: false })
-  seat_class: string;
+  @Column({ name: 'seat_class', type: 'varchar', length: 20, nullable: false })
+  seatClass: string;
 
   @Column({ type: 'varchar', length: 20, default: 'Confirmed' })
   status: string;

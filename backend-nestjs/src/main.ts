@@ -7,6 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api');
+  app.enableCors();
 
   const config = new DocumentBuilder()
     .setTitle('Joe Del Balzo Flight Management API')

@@ -31,11 +31,11 @@ describe('Bookings API (e2e)', () => {
     const flightRes = await request(server)
       .post('/api/flights')
       .send({
-        flight_number: 'JB-9003',
+        flightNumber: 'JB-9003',
         origin: 'JFK',
         destination: 'AUK',
-        departure_time: "2025-03-15T10:00:00Z",
-        arrival_time: "2025-03-15T10:01:00Z",
+        departureTime: "2025-03-15T10:00:00Z",
+        arrivalTime: "2025-03-15T10:01:00Z",
         capacity: 1
       })
 
@@ -60,7 +60,7 @@ describe('Bookings API (e2e)', () => {
   it('POST /api/flights/:id/bookings --> should create a booking', async () => {
     const res = await request(server)
       .post(`/api/flights/${flightId}/bookings`)
-      .send({ passenger_name: 'Joe Del Balzo', seat_class: 'First Class' })
+      .send({ passengerName: 'Joe Del Balzo', seatClass: 'First Class' })
 
     expect(res.status).toBe(201)
     expect(res.body).toHaveProperty('id')
@@ -71,16 +71,16 @@ describe('Bookings API (e2e)', () => {
   it('POST /api/flights/:id/bookings --> should reject if flight is full', async () => {
     const res = await request(server)
       .post(`/api/flights/${flightId}/bookings`)
-      .send({ passenger_name: 'Joe Del Balzo', seat_class: 'First Class' })
+      .send({ passengerName: 'Joe Del Balzo', seatClass: 'First Class' })
 
     expect(res.status).toBe(400);
     expect(res.body.message).toContain('at full capacity');
   });
 
-  it('POST /api/flights/:id/bookings --> should reject invalid seat_class', async () => {
+  it('POST /api/flights/:id/bookings --> should reject invalid seatClass', async () => {
     const invalidRes = await request(server)
       .post(`/api/flights/${flightId}/bookings`)
-      .send({ passenger_name: 'Joe Del Balzo', seat_class: 'Premium' })
+      .send({ passengerName: 'Joe Del Balzo', seatClass: 'Premium' })
 
     expect(invalidRes.status).toBe(400);
     expect(invalidRes.body.message[0]).toContain('Seat Class must be');
@@ -89,7 +89,7 @@ describe('Bookings API (e2e)', () => {
   it('POST /api/flights/:id/bookings/:bookingId --> should cancel booking', async () => {
     const res = await request(server)
       .delete(`/api/flights/${flightId}/bookings/${bookingId}`)
-      .send({ passenger_name: 'Joe Del Balzo', seat_class: 'Premium' })
+      .send({ passengerName: 'Joe Del Balzo', seatClass: 'Premium' })
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('message', 'Booking canceled successfully');

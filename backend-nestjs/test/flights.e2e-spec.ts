@@ -49,11 +49,11 @@ describe('Flights API (e2e)', () => {
 
   it('POST /api/flights → should create a new flight', async () => {
     const flightData = {
-      flight_number: 'JB-9000',
+      flightNumber: 'JB-9000',
       origin: 'JFK',
       destination: 'LAX',
-      departure_time: '2025-03-15T10:00:00Z',
-      arrival_time: '2025-03-15T15:00:00Z',
+      departureTime: '2025-03-15T10:00:00Z',
+      arrivalTime: '2025-03-15T15:00:00Z',
       capacity: 120,
     };
 
@@ -61,7 +61,7 @@ describe('Flights API (e2e)', () => {
 
     expect(res.status).toBe(201);
     expect(res.body).toHaveProperty('id');
-    expect(res.body.flight_number).toBe(flightData.flight_number);
+    expect(res.body.flightNumber).toBe(flightData.flightNumber);
     expect(res.body.status).toBe('Scheduled');
     createdFlightId = res.body.id;
   });
@@ -85,7 +85,7 @@ describe('Flights API (e2e)', () => {
 
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
-    expect(res.body.some((f: any) => f.flight_number === 'JB-9000')).toBe(true);
+    expect(res.body.some((f: any) => f.flightNumber === 'JB-9000')).toBe(true);
   });
 
 
@@ -99,7 +99,7 @@ describe('Flights API (e2e)', () => {
     const res = await request(server).get(`/api/flights/${createdFlightId}`);
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('id', createdFlightId);
-    expect(res.body.flight_number).toBe('JB-9000');
+    expect(res.body.flightNumber).toBe('JB-9000');
   });
 
   it('GET /api/flights?origin=JFK&destination=LAX → should return matching flights', async () => {
@@ -113,11 +113,11 @@ describe('Flights API (e2e)', () => {
 
   it('POST /api/flights → should reject invalid IATA code', async () => {
     const badFlight = {
-      flight_number: 'JB-9001',
+      flightNumber: 'JB-9001',
       origin: 'JF', // too short
       destination: 'LAX',
-      departure_time: '2025-03-15T10:00:00Z',
-      arrival_time: '2025-03-15T14:00:00Z',
+      departureTime: '2025-03-15T10:00:00Z',
+      arrivalTime: '2025-03-15T14:00:00Z',
       capacity: 100,
     };
 
@@ -126,28 +126,28 @@ describe('Flights API (e2e)', () => {
     expect(res.body.message[0]).toContain('origin must be');
   });
 
-  it('POST /api/flights → should reject when arrival_time is before departure_time', async () => {
+  it('POST /api/flights → should reject when arrivalTime is before departureTime', async () => {
     const invalidFlight = {
-      flight_number: 'JB-9002',
+      flightNumber: 'JB-9002',
       origin: 'JFK',
       destination: 'LAX',
-      departure_time: '2025-03-15T14:00:00Z',
-      arrival_time: '2025-03-15T10:00:00Z',
+      departureTime: '2025-03-15T14:00:00Z',
+      arrivalTime: '2025-03-15T10:00:00Z',
       capacity: 120,
     };
 
     const res = await request(server).post('/api/flights').send(invalidFlight);
     expect(res.status).toBe(400);
-    expect(res.body.message).toContain('arrival_time must be after departure_time');
+    expect(res.body.message).toContain('arrivalTime must be after departureTime');
   });
 
-  it('POST /api/flights → should reject duplicate flight_number on same date', async () => {
+  it('POST /api/flights → should reject duplicate flightNumber on same date', async () => {
     const duplicateFlight = {
-      flight_number: 'JB-9000', // same as createdFlightId
+      flightNumber: 'JB-9000', // same as createdFlightId
       origin: 'JFK',
       destination: 'LAX',
-      departure_time: '2025-03-15T18:00:00Z', // same day
-      arrival_time: '2025-03-15T22:00:00Z',
+      departureTime: '2025-03-15T18:00:00Z', // same day
+      arrivalTime: '2025-03-15T22:00:00Z',
       capacity: 200,
     };
 

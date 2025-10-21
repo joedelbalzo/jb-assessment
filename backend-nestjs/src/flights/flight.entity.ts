@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Booking } from 'src/bookings/booking.entity';
+import { Booking } from '../bookings/booking.entity';
 
 @Entity({ name: 'flights' })
 
@@ -7,8 +7,8 @@ export class Flight {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 10, nullable: false })
-  flight_number: string;
+  @Column({ name: 'flight_number', type: 'varchar', length: 10, nullable: false })
+  flightNumber: string;
 
   @Column({ type: 'varchar', length: 10, nullable: false })
   origin: string;
@@ -16,11 +16,11 @@ export class Flight {
   @Column({ type: 'varchar', length: 10, nullable: false })
   destination: string;
 
-  @Column({ type: 'timestamp without time zone', nullable: false })
-  departure_time: Date;
+  @Column({ name: 'departure_time', type: 'timestamp without time zone', nullable: false })
+  departureTime: Date;
 
-  @Column({ type: 'timestamp without time zone', nullable: false })
-  arrival_time: Date;
+  @Column({ name: 'arrival_time', type: 'timestamp without time zone', nullable: false })
+  arrivalTime: Date;
 
   @Column({ type: 'integer', nullable: false })
   capacity: number;

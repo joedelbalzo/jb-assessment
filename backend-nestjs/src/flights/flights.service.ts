@@ -22,10 +22,10 @@ export class FlightsService {
   async create(dto: CreateFlightDTO): Promise<Flight> {
 
     //very basic service validation -- does it depart before it arrives? does the flight number already exist today?
-    const departure = new Date(dto.departure_time);
-    const arrival = new Date(dto.arrival_time);
+    const departure = new Date(dto.departureTime);
+    const arrival = new Date(dto.arrivalTime);
     if (arrival <= departure) {
-      throw new BadRequestException('arrival_time must be after departure_time')
+      throw new BadRequestException('arrivalTime must be after departureTime')
     }
 
     const startOfDay = new Date(Date.UTC(
@@ -38,14 +38,14 @@ export class FlightsService {
 
     const existing = await this.flightRepo.findOne({
       where: {
-        flight_number: dto.flight_number,
-        departure_time: Between(startOfDay, endOfDay),
+        flightNumber: dto.flightNumber,
+        departureTime: Between(startOfDay, endOfDay),
       },
     });
 
     if (existing) {
       throw new BadRequestException(
-        `Flight number ${dto.flight_number} already exists on ${departure.toISOString().split('T')[0]}.`,
+        `Flight number ${dto.flightNumber} already exists on ${departure.toISOString().split('T')[0]}.`,
       );
     }
     //end of very basic service validation
@@ -57,19 +57,19 @@ export class FlightsService {
     return this.flightRepo.save(flight)
   }
 
-  async searchFlights(origin?: string, destination?: string, date?: string, flight_number?: string, status?: string): Promise<Flight[]> {
+  async searchFlights(origin?: string, destination?: string, date?: string, flightNumber?: string, status?: string): Promise<Flight[]> {
 
     const where: FindOptionsWhere<Flight> = {}
     if (origin) where.origin = origin
     if (destination) where.destination = destination
-    if (flight_number) where.flight_number = flight_number
+    if (flightNumber) where.flightNumber = flightNumber
     if (status) where.status = status
 
     if (date) {
       const start = new Date(date);
       const end = new Date(date);
       end.setUTCHours(23, 59, 59, 999);
-      where.departure_time = Between(start, end)
+      where.departureTime = Between(start, end)
     }
 
 

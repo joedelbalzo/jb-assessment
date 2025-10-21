@@ -22,14 +22,11 @@ export class BookingsService {
     return this.bookingRepo.findOne({ where: { id } })
   }
 
-  async getBookingsForFlight(flightId: number) {
+  async getBookingsForFlight(flightId: number): Promise<Booking[]> {
     const bookings = await this.bookingRepo.find({
-      where: { flight_id: flightId },
+      where: { flightId: flightId },
       order: { id: 'ASC' }
     })
-    if (!bookings.length) {
-      throw new NotFoundException(`No bookings found on flight ${flightId}`)
-    }
     return bookings
   }
 
@@ -41,7 +38,7 @@ export class BookingsService {
 
     //not in spec, and this is very raw for the sake of simple math as opposed to airlines' algorithm IP.
     const confirmed = await this.bookingRepo.count({
-      where: { flight_id: flightId, status: 'Confirmed' },
+      where: { flightId: flightId, status: 'Confirmed' },
     })
     if (confirmed >= flight.capacity) {
       throw new BadRequestException(`Flight ${flightId} is at full capacity.`)
@@ -49,14 +46,14 @@ export class BookingsService {
 
     const booking = this.bookingRepo.create({
       ...dto,
-      flight_id: flight.id,
+      flightId: flight.id,
       status: 'Confirmed'
     })
     return this.bookingRepo.save(booking)
   }
 
   async cancelBooking(flightId: number, bookingId: number): Promise<void> {
-    const booking = await this.bookingRepo.findOne({ where: { id: bookingId, flight_id: flightId } })
+    const booking = await this.bookingRepo.findOne({ where: { id: bookingId, flightId: flightId } })
     if (!booking) {
       throw new NotFoundException(`Booking ID ${bookingId} on flight ${flightId} not found`)
     }

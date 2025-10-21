@@ -7,8 +7,8 @@ export class CreateFlightDTO {
     description: 'Flight Number, as letters JB, hyphen, and three digits'
   })
   @IsString()
-  @Matches(/^[A-Z0-9-]+$/i, { message: 'flight_number must be alphanumeric (e.g. JB-202)' })
-  flight_number: string;
+  @Matches(/^[A-Z0-9-]{3,8}$/i, { message: 'flight_number must be alphanumeric (e.g. JB-202) and between 3 and 8 characters' })
+  flightNumber: string;
 
   @ApiProperty({
     example: 'JFK',
@@ -31,14 +31,14 @@ export class CreateFlightDTO {
     description: 'UTC-Time for the flight departure'
   })
   @IsDateString()
-  departure_time: string;
+  departureTime: string;
 
   @ApiProperty({
     example: '2025-03-15T18:00:00.000Z',
     description: 'UTC-Time for the flight departure'
   })
   @IsDateString()
-  arrival_time: string;
+  arrivalTime: string;
 
   @ApiProperty({
     example: '200',
@@ -46,7 +46,7 @@ export class CreateFlightDTO {
   })
   @IsInt()
   @Min(1)
-  @Max(1000)
+  @Max(400)
   capacity: number;
 
 }

@@ -8,8 +8,8 @@ export class CreateBookingDTO {
   })
   @IsString()
   @Length(1, 100)
-  @Matches(/^[A-Za-z ,.'-]+$/, { message: 'passenger_name must be alphabetic' })
-  passenger_name: string;
+  @Matches(/^[\p{L}\p{M} ,.'-]+$/u, { message: 'passenger_name must be alphabetic' })
+  passengerName: string;
 
   @ApiProperty({
     example: 'Economy',
@@ -19,6 +19,6 @@ export class CreateBookingDTO {
   @Matches(/^(Economy|Business|First Class)$/i, {
     message: 'Seat Class must be Economy, Business, or First Class'
   })
-  seat_class: string
+  seatClass: string
 
 }
