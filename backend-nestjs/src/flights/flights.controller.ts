@@ -1,8 +1,9 @@
-import { Body, Controller, Get, NotFoundException, Param, ParseIntPipe, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, NotFoundException, Param, ParseIntPipe, Post, Put, Query } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { FlightsService } from "./flights.service";
 import { Flight } from "./flight.entity";
 import { CreateFlightDTO } from "./dto/create-flight.dto";
+import { UpdateFlightDTO } from "./dto/update-flight-dto";
 import { SearchFlightsDTO } from "./dto/search-flight.dto";
 import { Throttle } from "@nestjs/throttler";
 
@@ -34,6 +35,14 @@ export class FlightsController {
   @Post()
   async createFlight(@Body() dto: CreateFlightDTO): Promise<Flight> {
     return this.flightsService.create(dto)
+  }
+
+  @Put(':id')
+  async updateFlight(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateFlightDTO
+  ): Promise<Flight> {
+    return this.flightsService.update(id, dto)
   }
 
 }

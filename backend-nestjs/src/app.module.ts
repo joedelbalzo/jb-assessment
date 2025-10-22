@@ -5,8 +5,6 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule } from '@nestjs/throttler';
 
-
-
 import { FlightsModule } from './flights/flights.module'
 import { BookingsModule } from './bookings/bookings.module';
 
@@ -24,7 +22,7 @@ import { BookingsModule } from './bookings/bookings.module';
         type: 'postgres',
         url: process.env.DATABASE_URL,
         autoLoadEntities: true,
-        synchronize: process.env.NODE_ENV !== 'production', // Lightweight disable schema auto-sync in production
+        synchronize: true,
       }),
     }),
     FlightsModule,

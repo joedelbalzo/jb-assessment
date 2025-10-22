@@ -1,8 +1,9 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, Between, FindOptionsWhere } from "typeorm";
 import { Flight } from "./flight.entity";
 import { CreateFlightDTO } from "./dto/create-flight.dto";
+import { UpdateFlightDTO } from "./dto/update-flight-dto";
 
 @Injectable()
 export class FlightsService {
@@ -74,6 +75,66 @@ export class FlightsService {
 
 
     return this.flightRepo.find({ where })
+  }
+
+  async updateFlightStatus(status: string, flightId: number): Promise<Flight> {
+    const flight = await this.flightRepo.findOne({ where: { id: flightId } })
+    if (!flight) {
+      throw new NotFoundException(`No flight with the id of ${flightId}`)
+    }
+
+    flight.status = status
+
+    return this.flightRepo.save(flight)
+  }
+
+  async update(id: number, dto: UpdateFlightDTO): Promise<Flight> {
+    const flight = await this.flightRepo.findOne({ where: { id } })
+    if (!flight) {
+      throw new NotFoundException(`Flight with ID ${id} not found`)
+    }
+
+    // Validate departure/arrival times if both are being updated
+    if (dto.departureTime || dto.arrivalTime) {
+      const departure = dto.departureTime ? new Date(dto.departureTime) : new Date(flight.departureTime);
+      const arrival = dto.arrivalTime ? new Date(dto.arrivalTime) : new Date(flight.arrivalTime);
+
+      if (arrival <= departure) {
+        throw new BadRequestException('arrivalTime must be after departureTime')
+      }
+    }
+
+    // Check for duplicate flight numbers if flight number or departure time is being updated
+    if (dto.flightNumber || dto.departureTime) {
+      const flightNumber = dto.flightNumber || flight.flightNumber;
+      const departureTime = dto.departureTime ? new Date(dto.departureTime) : new Date(flight.departureTime);
+
+      const startOfDay = new Date(Date.UTC(
+        departureTime.getUTCFullYear(),
+        departureTime.getUTCMonth(),
+        departureTime.getUTCDate()
+      ));
+      const endOfDay = new Date(startOfDay);
+      endOfDay.setUTCDate(startOfDay.getUTCDate() + 1);
+
+      const existing = await this.flightRepo.findOne({
+        where: {
+          flightNumber: flightNumber,
+          departureTime: Between(startOfDay, endOfDay),
+        },
+      });
+
+      if (existing && existing.id !== id) {
+        throw new BadRequestException(
+          `Flight number ${flightNumber} already exists on ${departureTime.toISOString().split('T')[0]}.`,
+        );
+      }
+    }
+
+    // Update only the fields that are provided
+    Object.assign(flight, dto);
+
+    return this.flightRepo.save(flight)
   }
 
 }

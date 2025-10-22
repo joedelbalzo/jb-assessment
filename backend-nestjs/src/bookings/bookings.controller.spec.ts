@@ -107,11 +107,11 @@ describe('BookingsController', () => {
     });
   });
 
-  describe('cancelBookings', () => {
+  describe('cancelBooking', () => {
     it('should cancel booking and return success message', async () => {
       mockBookingsService.cancelBooking.mockResolvedValue(undefined);
 
-      const result = await controller.cancelBookings(1, 1);
+      const result = await controller.cancelBooking(1, 1);
 
       expect(result).toEqual({ message: 'Booking canceled successfully' });
       expect(mockBookingsService.cancelBooking).toHaveBeenCalledWith(1, 1);
@@ -122,7 +122,7 @@ describe('BookingsController', () => {
         new NotFoundException('Booking ID 999 on flight 1 not found'),
       );
 
-      await expect(controller.cancelBookings(1, 999)).rejects.toThrow(NotFoundException);
+      await expect(controller.cancelBooking(1, 999)).rejects.toThrow(NotFoundException);
     });
   });
 });
